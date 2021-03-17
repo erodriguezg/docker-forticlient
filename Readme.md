@@ -4,16 +4,6 @@ Connect to a FortiNet VPNs through docker container.
 
 ## Usage
 
-You can access a predetermined target PC inside the VPN directly from any machine in your LAN using RDP. You just open RDP and set the `IP:PORT` like this `docker-host-name-or-IP:docker-host-mapped-port`, where
- * `docker-host-name-or-IP` - name (or IP) of your docker host,
- * `docker-host-mapped-port` - port on the left side of `-p` parameter (can be seen below).
-The docker image will handle the rest using internally installed **forticlientsslvpn_cli** and via routings
-specified inside as well.
-
-This allows the user to RDP to the docker host with the specified port, which will then be forwarded to the docker container running the vpn, and finally redirected to the remote machine you wish to connect to (set by `VPNRDPIP`).
-
-If running the docker container from the machine you wish to connect from you can omit the -p settings, and connect to the IP address of the container on port 3380.
-
 ```bash
 # Start the privileged docker container
 
@@ -26,7 +16,8 @@ If running the docker container from the machine you wish to connect from you ca
 # -e "VPNADDR=vpn-gateway-ip:port" => specify VPN gateway and port (defined by your VPN provider)
 # -e "VPNUSER=[user-id]" => VPN user ID (defined by your VPN provider)
 # -e "VPNPASS=[pwd]" => VPN user password (defined by your VPN provider). You can use DOCKER SWARM secrets to make this more secure.
-# -e "VPNRDPIP=192.168.1.123" => IP of the remote PC (target PC inside the VPN)
+# -e "TUNNELIP=192.168.1.123" => IP of the remote connection throw VPN (target IP inside the VPN)
+# -e "TUNNELPORT=3380" => PORT of the remote PC connection throw VPN (target PORT inside the VPN)
 
 docker run \
   -d \
@@ -39,6 +30,7 @@ docker run \
   -e "VPNADDR=vpn-gateway-ip:port" \
   -e "VPNUSER=[user-id]" \
   -e "VPNPASS=[pwd]" \
-  -e "VPNRDPIP=192.168.1.123" \
-  jakubv/docker-forticlient
+  -e "TUNNELIP=192.168.1.123" \
+  -e "TUNNELPORT=3380"
+  erodriguezg/docker-forticlient
 ```
